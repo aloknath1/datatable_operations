@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dtApp">
+	<head>
+		<title>DataTable Operations</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+		<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.1.min.js"></script>
+		<script src="script.js"></script>
+		
+		<style>
+			.top_row
+			{
+				padding:1%;
+			}
+			.paginationclass span{
+				margin-left:15px;
+				display:inline-block;
+			}
+			.pagination-controle li{
+				display: inline-block;
+			}
+			.pagination-controle button{
+				font-size: 12px;
+				margin-top: -26px;
+				cursor:pointer;
+				
+			}
+			.pagination{
+				margin:5px 12px !important;
+			}
+		</style>
+	</head>
+	<body ng-controller="userCtrl">
+		<div class="container-fluid">
+			<div class="row top_row">
+				<div style="width:50%;float:left;">
+					<label for="search">Search: </label><input type="text" name="search" ng-model="search" id="search" placeholder="Filter by" autofocus/>
+				</div>
+				<div style="text-align:right">
+					<input type="button" name="add_row" class="btn btn-primary" id="add_row" ng-click="addRow()" value="Add New" />
+				</div>
+			</div>
+			<div class="row table_row">	
+				<div class="col-xs-4 col-md-12 col-lg-12 table-responsive">
+					<form name="frm" id="frm">
+						<table class="table table-striped table-bordered table-hover" border="1" cellspacing="0" cellpadding="0">
+							<tr>
+								<th>
+									<a href="#" ng-click="sortType='name'">Name <span ng-show="sortType == 'name'" class="fa fa-caret-down"></span></a>
+								</th>
+								<th><a href="#" ng-click="sortType='email'">Email <span ng-show="sortType == 'email'" class="fa fa-caret-down"></span></a></th>
+								<th><a href="#" ng-click="sortType='address'">Address <span ng-show="sortType == 'address'" class="fa fa-caret-down"></span></a></th>
+								<th><a href="#" ng-click="sortType='phone'">Phone <span ng-show="sortType == 'phone'" class="fa fa-caret-down"></span></a></th>
+								<th><a href="#" ng-click="sortType='website'">Website <span ng-show="sortType == 'website'" class="fa fa-caret-down"></span></a></th>
+								<th><a href="#" ng-click="sortType='company'">Company <span ng-show="sortType == 'commpany'" class="fa fa-caret-down"></span></a></th>
+								<th>Action</th>
+							</tr>
+							<tr ng-repeat="x in users |filter:search | orderBy:sortType:sortReverse | pagination: curPage * pageSize | limitTo: pageSize">
+								<td>
+									<div ng-hide="editingData[x.id]">{{x.name}}</div>
+									<div ng-show="editingData[x.id]"><input type="text" ng-model="x.name" /></div>
+								</td>
+								<td>
+									<div ng-hide="editingData[x.id]">{{x.email}}</div>
+									<div ng-show="editingData[x.id]"><input type="text" ng-model="x.email" /></div>
+								</td>
+								<td>
+									<div ng-hide="editingData[x.id]">{{x.address.street}} {{x.address.suite}} {{x.address.city}} {{x.address.zipcode}}</div>
+									<div ng-show="editingData[x.id]"><textarea>{{x.address.street}} {{x.address.suite}} {{x.address.city}} {{x.address.zipcode}}</textarea></div>									
+								</td>
+								<td>
+									<div ng-hide="editingData[x.id]">{{x.phone}}</div>
+									<div ng-show="editingData[x.id]"><input type="text" ng-model="x.phone" /></div>
+								</td>
+								<td>
+									<div ng-hide="editingData[x.id]">{{x.website}}</div>
+									<div ng-show="editingData[x.id]"><input type="text" ng-model="x.website" /></div>
+								</td>
+								<td>
+									<div ng-hide="editingData[x.id]">{{x.company.name}}</div>
+									<div ng-show="editingData[x.id]"><input type="text" ng-model="x.company.name" /></div>
+								</td>		
+								<td>
+									<button ng-hide="editingData[x.id]" ng-click="modify(x)">Modify</button>
+									<button ng-show="editingData[x.id]" ng-click="update(x)">Update</button>                               
+								</td>
+							</tr>						
+						</table>
+					</form>
+					
+					<div class="pagination pagination-centered" ng-show="users.length">
+						<ul class="pagination-controle pagination">
+							<li>
+							  <button type="button" class="btn btn-primary" ng-disabled="curPage == 0" ng-click="curPage=curPage-1"> &lt; PREV</button>
+							</li>
+							<li><span>Page {{curPage + 1}} of {{ numberOfPages() }}</span></li>
+							<li>
+								<button type="button" class="btn btn-primary" ng-disabled="curPage >= users.length/pageSize - 1" ng-click="curPage = curPage+1">NEXT &gt;</button>
+							</li>
+						</ul>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		
+	</body>
+</html>
